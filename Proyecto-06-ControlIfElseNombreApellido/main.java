@@ -2,7 +2,6 @@ import java.util.Scanner;
 
 public class Main {
 
-    // Constantes para evitar números mágicos
     public static final int EDAD_MINIMA = 0;
     public static final int EDAD_MAXIMA = 120;
 
@@ -40,8 +39,8 @@ public class Main {
     /**
      * Calcula la tarifa según la edad y si es estudiante.
      *
-     * @param edad          Edad del usuario (ya validada)
-     * @param esEstudiante  Indica si el usuario es estudiante
+     * @param edad          Edad del usuario
+     * @param esEstudiante  usuario es estudiante
      * @return La tarifa correspondiente según las reglas
      */
     public static int calcularTarifa(int edad, boolean esEstudiante) {

@@ -4,11 +4,11 @@ public class CalculadoraSimple {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("Calculadora");
-        System.out.println("1) Sumar");
-        System.out.println("2) Restar");
-        System.out.println("3) Multiplicar");
-        System.out.println("4) Dividir");
+        System.out.println("Calculadora!!");
+        System.out.println("1. Sumar");
+        System.out.println("2. Restar");
+        System.out.println("3. Multiplicar");
+        System.out.println("4. Dividir");
         System.out.println();
 
         System.out.print("Selecciona una opción (1-4): ");
@@ -23,7 +23,7 @@ public class CalculadoraSimple {
         System.out.println();
 
         double resultado = 0;
-        boolean valido = true;
+        boolean esValido = true;
         switch (opcion) {
             case 1:
                 resultado = numeroA + numeroB;
@@ -43,27 +43,28 @@ public class CalculadoraSimple {
             case 4:
                 System.out.println("4. Dividir");
                 if (numeroB == 0) {
-                    System.out.println("No se puede dividir entre cero");
-                    valido = false;
-                } else {
+                    System.out.println("Noooo se puede dividir entre cero");
+                    esValido = false;
+                }
+                else {
                     resultado = numeroA / numeroB;
                 }
                 break;
 
             default:
-                valido = false;
+                esValido = false;
                 System.out.println("Opción inválida");
                 break;
         }
 
-        System.out.println("Valores ingresados: ");
-        System.out.println("A = " + numeroA);
-        System.out.println("B = " + numeroB);
+        if (esValido) {
 
-        if (valido) {
+            System.out.println("numero A = " + numeroA);
+            System.out.println("numero B = " + numeroB);
             System.out.println("Resultado: " + resultado);
 
-        }else{
+        }
+        else{
             System.out.println("RESULTADO NO EXISTENTE");
         }
 

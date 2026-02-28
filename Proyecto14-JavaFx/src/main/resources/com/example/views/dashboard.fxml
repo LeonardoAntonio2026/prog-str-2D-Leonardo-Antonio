@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+
+<?import javafx.scene.text.Font?>
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="500.0" spacing="30.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="com.ejemplo.controllers.DashboardController">
+    <children>
+        <Label fx:id="lblBienvenida" text="Bienvenido a la utez!!" textFill="#2E7D32">
+            <font>
+                <Font name="System Bold" size="28.0" />
+            </font>
+        </Label>
+        <Label text="¡Has iniciado sesión correctamente!" textFill="#424242">
+            <font>
+                <Font size="16.0" />
+            </font>
+        </Label>
+    </children>
+    <padding>
+        <Insets top="100.0" />
+    </padding>
+</VBox>

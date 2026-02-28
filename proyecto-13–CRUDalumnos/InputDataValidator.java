@@ -68,7 +68,7 @@ public class InputDataValidator {
                 System.out.println("Error: El valor debe estar entre " + min + " y " + max);
             }
         } while (valor < min || valor > max);
-        sc.nextLine(); // Consumir el salto de línea
+        sc.nextLine();
         return valor;
     }
 

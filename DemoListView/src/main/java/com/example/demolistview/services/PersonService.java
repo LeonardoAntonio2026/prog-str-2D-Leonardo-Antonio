@@ -20,21 +20,22 @@ public class PersonService {
             String[] parts = line.split(",", -1);
             String name = parts[0].trim();
             String correo = parts[1].trim();
+            String edad = parts[2].trim();
 
-            result.add(name+"-"+correo);
+            result.add(name+"-"+correo+"-"+edad);
         }
         return result;
 
     }
 
-    public void addPerson(String name, String email) throws IOException {
-        validatePerson(name,email);
+    public void addPerson(String name, String email, String age) throws IOException {
+        validatePerson(name,email,age);
         String nameNoComa = name.replace(",","");
         String emailNoComa = email.replace(",","");
-        repo.appendNewLine(nameNoComa+","+emailNoComa);
+        repo.appendNewLine(nameNoComa+","+emailNoComa+","+age);
     }
 
-    public void validatePerson(String name, String email){
+    public void validatePerson(String name, String email, String age){
         if(name.isBlank() || name.length() < 3){
             throw new IllegalArgumentException("El nombre no cumple con los estanderes");
         }
@@ -42,6 +43,15 @@ public class PersonService {
         String em = (email==null) ? "" : email.trim();
         if(em.isBlank() || em.contains("@") || !em.contains(".")){
             throw new IllegalArgumentException("El correo es incorrecto");
+        }
+
+        String a = (age==null) ? "" : age.trim();
+        if(a.isBlank() || !a.matches("\\d+")){
+            throw new IllegalArgumentException("La edad debe ser un valor numerico");
+        }
+        int edadNum = Integer.parseInt(a);
+        if(edadNum < 18){
+            throw new IllegalArgumentException("Solo se aceptan mayores de edad (>=18)");
         }
     }
 }

@@ -29,8 +29,9 @@
       </GridPane>
       <HBox prefHeight="100.0" prefWidth="200.0">
          <children>
-            <Button mnemonicParsing="false" text="Recargar" />
-            <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" text="Agregar"  onAction="onAddPerson()"/>
+            <Button mnemonicParsing="false" text="Recargar" onAction="#loadFromFile" />
+            <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" text="Agregar"  onAction="#onAddPerson"/>
+             <Button mnemonicParsing="false" text="Actualizar" onAction="#OnUpdate" />
          </children>
       </HBox>
       <ListView fx:id="listView" prefHeight="200.0" prefWidth="200.0" />

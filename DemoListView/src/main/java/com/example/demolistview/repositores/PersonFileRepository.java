@@ -22,8 +22,22 @@ public class PersonFileRepository {
         return Files.readAllLines(filePath, StandardCharsets.UTF_8);
     }
 
-    public void appendNewLine(String line) throws IOException{
-        Files.writeString(filePath,line+System.lineSeparator(),StandardCharsets.UTF_8, StandardOpenOption.APPEND);
+    public void appendNewLine(String line) throws IOException {
+
+        boolean hasContent = Files.exists(filePath) && Files.size(filePath) > 0;
+
+        String text = hasContent ? System.lineSeparator() + line : line;
+
+        Files.writeString(filePath, text,
+                StandardCharsets.UTF_8,
+                StandardOpenOption.CREATE,
+                StandardOpenOption.APPEND);
+    }
+
+    public void appendAllLines(List<String> lines) throws IOException{
+        Files.write(filePath,lines,
+                StandardCharsets.UTF_8,
+                StandardOpenOption.TRUNCATE_EXISTING);
 
     }
 

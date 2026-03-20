@@ -23,6 +23,8 @@ public class AppController {
     private TextField txtEmail;
     @FXML
     private TextField txtAge;
+    @FXML
+    private TextField searchBar;
 
     private final ObservableList<String> data = FXCollections.observableArrayList();
 
@@ -39,6 +41,12 @@ public class AppController {
                 }
 
         );
+
+        searchBar.textProperty().addListener((observable, oldValue, Search) -> {
+            System.out.println("Text field changed from " + oldValue + " to " + Search);
+            loadFromFileSearch(Search);
+
+        });
 
         listView.setItems(data);
     }
@@ -93,6 +101,24 @@ public class AppController {
 
 
     }
+
+    @FXML
+    private void OnDelete(){
+        int index = listView.getSelectionModel().getSelectedIndex();
+        try {
+            service.deletePerson(index);
+            loadFromFile();
+            lblMsg.setText("Persona eliminada exitosamente");
+            lblMsg.setStyle("-fx-text-fill: green");
+            txtName.clear();
+            txtEmail.clear();
+            txtAge.clear();
+        } catch (IOException e) {
+            lblMsg.setText(e.getMessage());
+            lblMsg.setStyle("-fx-text-fill: red");
+        }
+    }
+
     @FXML
     private void loadFromFile(){
         try{
@@ -100,6 +126,18 @@ public class AppController {
             data.setAll(items);
             lblMsg.setText("Datos cargados Exitosamente ");
             lblMsg.setStyle("-fx-text-fill: green");
+        }catch (IOException e){
+            lblMsg.setText(e.getMessage());
+            lblMsg.setStyle("-fx-text-fill: red");
+        }
+    }
+
+    @FXML
+    private void loadFromFileSearch(String search){
+        try{
+            List<String> items = service.loadDataForListSearch(search);
+            data.setAll(items);
+
         }catch (IOException e){
             lblMsg.setText(e.getMessage());
             lblMsg.setStyle("-fx-text-fill: red");
@@ -114,4 +152,8 @@ public class AppController {
         txtAge.setText(parts[2]);
 
     }
+
+
+
+
 }

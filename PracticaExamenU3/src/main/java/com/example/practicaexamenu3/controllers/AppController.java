@@ -1,6 +1,6 @@
-package com.example.demolistview.controllers;
+package com.example.practicaexamenu3.controllers;
 
-import com.example.demolistview.services.PersonService;
+import com.example.practicaexamenu3.services.PersonService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;

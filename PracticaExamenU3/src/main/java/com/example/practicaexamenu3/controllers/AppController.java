@@ -1,18 +1,16 @@
 package com.example.practicaexamenu3.controllers;
 
-import com.example.practicaexamenu3.services.PersonService;
+import com.example.practicaexamenu3.services.ContactoService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 
-import javax.swing.*;
-import java.io.IOException;
-import java.util.List;
-
 public class AppController {
+
     @FXML
     private ListView<String> listView;
     @FXML
@@ -20,140 +18,114 @@ public class AppController {
     @FXML
     private TextField txtName;
     @FXML
-    private TextField txtEmail;
+    private TextField txtTelefono;
     @FXML
-    private TextField txtAge;
-    @FXML
-    private TextField searchBar;
+    private ComboBox<String> cmbParentesco;
 
     private final ObservableList<String> data = FXCollections.observableArrayList();
-
-    private PersonService service = new PersonService();
+    private final ContactoService service = new ContactoService();
+    private String nombreOriginal = null;
 
     @FXML
-    public void initialize(){ //Se ejecuta al inicio en cuanto se cargue el controller
-        //Inicializar ListView
-
-        loadFromFile();
-
-        listView.getSelectionModel().selectedItemProperty().addListener( (obs,old,newValue)->{
-                loadDataToForm(newValue);
-                }
-
-        );
-
-        searchBar.textProperty().addListener((observable, oldValue, Search) -> {
-            System.out.println("Text field changed from " + oldValue + " to " + Search);
-            loadFromFileSearch(Search);
-
-        });
-
+    public void initialize() {
+        cmbParentesco.getItems().addAll(service.getParentescos());
         listView.setItems(data);
+        listView.getSelectionModel().selectedItemProperty().addListener((obs, old, newValue) -> {
+            if (newValue != null) {
+                loadDataToForm(newValue);
+            }
+        });
     }
 
     @FXML
-    public void onAddPerson() throws IOException {
-        String name = txtName.getText();
-        String email = txtEmail.getText();
-        String age = txtAge.getText();
-
+    public void onAgregar() {
+        String nombre = txtName.getText().trim();
+        String telefono = txtTelefono.getText().trim();
+        String parentesco = cmbParentesco.getValue();
         try {
-            service.addPerson(name,email,age);
-            loadFromFile();
-            lblMsg.setText("Datos cargados Exitosamente ");
-            lblMsg.setStyle("-fx-text-fill: green");
-            txtName.clear();
-            txtEmail.clear();
-            txtAge.clear();
-        }catch (IOException e){
-            lblMsg.setText("Hubo un error con el archivo");
-            lblMsg.setStyle("-fx-text-fill: red");
-
-        }catch (IllegalArgumentException ex){
-            lblMsg.setText("Hubo un error con los datos:" + ex.getMessage());
-            lblMsg.setStyle("-fx-text-fill: red");
+            service.addContacto(nombre, telefono, parentesco == null ? "" : parentesco);
+            refreshList();
+            limpiarCampos();
+            showMsg("Contacto agregado exitosamente", true);
+        } catch (IllegalArgumentException e) {
+            showMsg(e.getMessage(), false);
         }
     }
 
     @FXML
-    public void OnUpdate(){
-        int index = listView.getSelectionModel().getSelectedIndex();
-        String name = txtName.getText();
-        String email = txtEmail.getText();
-        String age = txtAge.getText();
-
+    public void onBuscar() {
+        String nombre = txtName.getText().trim();
         try {
-            service.updatePerson(index,name,email,age);
-            lblMsg.setText("Actualizacion correcta");
-            lblMsg.setStyle("-fx-text-fill: green");
-            txtName.clear();
-            txtEmail.clear();
-            txtAge.clear();
-            loadFromFile();
-        } catch (IOException ex) {
-
-            lblMsg.setText(ex.getMessage());
-            lblMsg.setStyle("-fx-text-fill: red");
-        } catch (IllegalArgumentException e){
-            lblMsg.setText(e.getMessage());
-            lblMsg.setStyle("-fx-text-fill: red");
+            com.example.practicaexamenu3.clases.Contacto c = service.buscarContacto(nombre);
+            txtName.setText(c.getNombre());
+            txtTelefono.setText(c.getTelefono());
+            cmbParentesco.setValue(c.getParentesco());
+            nombreOriginal = c.getNombre();
+            showMsg("Contacto encontrado", true);
+        } catch (IllegalArgumentException e) {
+            showMsg(e.getMessage(), false);
         }
-
-
     }
 
     @FXML
-    private void OnDelete(){
-        int index = listView.getSelectionModel().getSelectedIndex();
+    public void onActualizar() {
+        if (nombreOriginal == null) {
+            showMsg("Primero busca o selecciona un contacto para actualizar", false);
+            return;
+        }
+        String nuevoNombre = txtName.getText().trim();
+        String nuevoTelefono = txtTelefono.getText().trim();
+        String nuevoParentesco = cmbParentesco.getValue();
         try {
-            service.deletePerson(index);
-            loadFromFile();
-            lblMsg.setText("Persona eliminada exitosamente");
-            lblMsg.setStyle("-fx-text-fill: green");
-            txtName.clear();
-            txtEmail.clear();
-            txtAge.clear();
-        } catch (IOException e) {
-            lblMsg.setText(e.getMessage());
-            lblMsg.setStyle("-fx-text-fill: red");
+            service.updateContacto(nombreOriginal, nuevoNombre, nuevoTelefono, nuevoParentesco == null ? "" : nuevoParentesco);
+            refreshList();
+            limpiarCampos();
+            showMsg("Contacto actualizado exitosamente", true);
+        } catch (IllegalArgumentException e) {
+            showMsg(e.getMessage(), false);
         }
     }
 
     @FXML
-    private void loadFromFile(){
-        try{
-            List<String> items = service.loadDataForList();
-            data.setAll(items);
-            lblMsg.setText("Datos cargados Exitosamente ");
-            lblMsg.setStyle("-fx-text-fill: green");
-        }catch (IOException e){
-            lblMsg.setText(e.getMessage());
-            lblMsg.setStyle("-fx-text-fill: red");
+    public void onEliminar() {
+        String nombre = txtName.getText().trim();
+        try {
+            service.deleteContacto(nombre);
+            refreshList();
+            limpiarCampos();
+            showMsg("Contacto eliminado exitosamente", true);
+        } catch (IllegalArgumentException e) {
+            showMsg(e.getMessage(), false);
         }
     }
 
     @FXML
-    private void loadFromFileSearch(String search){
-        try{
-            List<String> items = service.loadDataForListSearch(search);
-            data.setAll(items);
-
-        }catch (IOException e){
-            lblMsg.setText(e.getMessage());
-            lblMsg.setStyle("-fx-text-fill: red");
-        }
+    public void onLimpiar() {
+        limpiarCampos();
+        showMsg("Campos limpiados", true);
     }
 
-    private void loadDataToForm(String item){
+    private void refreshList() {
+        data.setAll(service.loadDataForList());
+    }
 
-        String[] parts = item.split("-");
+    private void limpiarCampos() {
+        txtName.clear();
+        txtTelefono.clear();
+        cmbParentesco.setValue(null);
+        nombreOriginal = null;
+    }
+
+    private void showMsg(String msg, boolean success) {
+        lblMsg.setText(msg);
+        lblMsg.setStyle(success ? "-fx-text-fill: green" : "-fx-text-fill: red");
+    }
+
+    private void loadDataToForm(String item) {
+        String[] parts = item.split(" \\| ");
         txtName.setText(parts[0]);
-        txtEmail.setText(parts[1]);
-        txtAge.setText(parts[2]);
-
+        txtTelefono.setText(parts[1]);
+        cmbParentesco.setValue(parts[2]);
+        nombreOriginal = parts[0];
     }
-
-
-
-
 }
